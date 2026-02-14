@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ruleta de San Valentín 💚</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  background: linear-gradient(135deg,#7dd3c7,#9fd3ff);
+  font-family: 'Arial', sans-serif;
+  text-align:center;
+  color:#033;
+  overflow:hidden;
+}
+h1{margin-top:20px;}
+.ruleta{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  max-width:320px;
+  margin:20px auto;
+}
+.celda{
+  height:90px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  padding:6px;
+  background:#6fa8dc;
+  color:white;
+  box-shadow:0 0 10px rgba(0,0,0,.2);
+}
+.legendaria{background:#f1c232;color:#4a2c00;font-weight:bold;}
+.btn{
+  background:#2ecc71;
+  color:white;
+  border:none;
+  padding:12px 25px;
+  border-radius:30px;
+  font-size:16px;
+}
+#resultado{
+  margin-top:15px;
+  font-size:16px;
+  display:none;
+}
+.corazon{
+  position:fixed;
+  bottom:-20px;
+  font-size:20px;
+  animation:flotar 5s linear infinite;
+}
+@keyframes flotar{
+  0%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(-110vh);opacity:0}
+}
+</style>
+</head>
+
+<body>
+<h1>🎡 Ruleta de San Valentín</h1>
+<p>Girás la ruleta y ganás amor 💚</p>
+
+<div class="ruleta" id="ruleta"></div>
+
+<button class="btn" onclick="girar()">💫 Girar ruleta</button>
+
+<div id="resultado"></div>
+
+<script>
+const premios=[
+{txt:"💛 Llavero 3D en forma de corazón\n«Te amo»", rare:"legendaria"},
+{txt:"💐 Ramo de hortensias\nFlores para el hombrecito más hermoso"},
+{txt:"📸 Vale por una foto"},
+{txt:"🎧 Vale por un audio diciendo lo que quieras"},
+{txt:"💌 Cartita:\nSoy muy feliz por conocerte y tenerte en mi vida"}
+];
+
+let usados=[];
+
+function crearRuleta(){
+  const r=document.getElementById("ruleta");
+  r.innerHTML="";
+  premios.forEach((p,i)=>{
+    const d=document.createElement("div");
+    d.className="celda "+(p.rare||"");
+    d.id="c"+i;
+    d.innerText="❓";
+    r.appendChild(d);
+  });
+}
+crearRuleta();
+
+function girar(){
+  if(usados.length===premios.length){
+    document.getElementById("resultado").innerHTML="💘 Ruleta completa<br>Feliz San Valentín, te amo mucho Alexin de mi vida";
+    document.getElementById("resultado").style.display="block";
+    for(let i=0;i<30;i++)corazon();
+    return;
+  }
+  let i;
+  do{i=Math.floor(Math.random()*premios.length)}while(usados.includes(i));
+  usados.push(i);
+  document.getElementById("c"+i).innerText=premios[i].txt;
+  document.getElementById("c"+i).classList.add(premios[i].rare||"");
+}
+
+function corazon(){
+  const c=document.createElement("div");
+  c.className="corazon";
+  c.innerText="💚";
+  c.style.left=Math.random()*100+"vw";
+  c.style.animationDuration=(3+Math.random()*3)+"s";
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),5000);
+}
+</script>
+</body>
+  </html>
