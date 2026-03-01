@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Lucky Draw del Amor 💘</title>
+
+
+<style>
+body {
+  background: radial-gradient(circle, #b6e3f4, #9adbc5);
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: white;
+}
+
+
+h1 {
+  margin-top: 20px;
+}
+
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 110px);
+  gap: 12px;
+  justify-content: center;
+  margin: 30px auto;
+}
+
+
+.item {
+  width: 110px;
+  height: 110px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 13px;
+  box-shadow: 0 0 12px rgba(0,0,0,.4);
+}
+
+
+.raro { background: #2b6fff; }
+.epico { background: #7a2bff; }
+.legendario { background: #f5c400; color: #333; }
+
+
+.activo {
+  outline: 4px solid white;
+  box-shadow: 0 0 25px white;
+}
+
+
+button {
+  padding: 15px 35px;
+  font-size: 18px;
+  border: none;
+  border-radius: 30px;
+  background: #4fa3a5;
+  color: white;
+}
+
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  align-items: center;
+  justify-content: center;
+}
+
+
+.modal-content {
+  background: white;
+  color: #333;
+  padding: 25px;
+  border-radius: 18px;
+  max-width: 300px;
+}
+
+
+/* CORAZONES */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 20px;
+  animation: flotar 4s linear forwards;
+}
+
+
+@keyframes flotar {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
+</style>
+</head>
+
+
+<body>
+
+
+<h1>🎯 Lucky Draw del Amor 🎯</h1>
+
+
+<div class="grid">
+  <div class="item raro" data-text="📸 Vale por una foto cuando yo quiera 😏">📸 Foto</div>
+  <div class="item epico" data-text="🌸 Flores para el hombrecito más hermoso">🌸 Flores</div>
+  <div class="item raro" data-text="🎙️ Vale por un audio diciendo lo que quieras">🎙️ Audio</div>
+
+
+  <div class="item epico" data-text="❤️ Llavero 3D en forma de corazón que dice: Te amo">❤️ Llavero</div>
+  <div class="item legendario" id="legendario"
+       data-text="💘 Feliz San Valentín, te amo mucho Alexin de mi vida 💘">
+       💛 Legendario
+  </div>
+  <div class="item raro" data-text="📸 Vale por una foto cuando yo quiera 😏">📸 Foto</div>
+
+
+  <div class="item raro" data-text="🎙️ Vale por un audio diciendo lo que quieras">🎙️ Audio</div>
+  <div class="item epico" data-text="🌸 Un ramo de hortensias solo para vos">🌸 Hortensias</div>
+  <div class="item raro" data-text="📸 Vale por una foto cuando yo quiera 😏">📸 Foto</div>
+</div>
+
+
+<button onclick="girar()">GIRAR 💖</button>
+
+
+<audio id="spinSound">
+  <source src="https://www.soundjay.com/mechanical/sounds/mechanical-clonk-1.mp3">
+</audio>
+
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2>🎁 Recompensa</h2>
+    <p id="modalText"></p>
+    <button onclick="cerrar()">Cerrar 💕</button>
+  </div>
+</div>
+
+
+<script>
+const items = document.querySelectorAll(".item");
+const sonido = document.getElementById("spinSound");
+const modal = document.getElementById("modal");
+const modalText = document.getElementById("modalText");
+
+
+let index = 0;
+let legendarioDisponible = true;
+
+
+function lanzarCorazones() {
+  for (let i = 0; i < 25; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+  }
+}
+
+
+function girar() {
+  sonido.play();
+  let vueltas = Math.floor(Math.random() * 15) + 30;
+  let i = 0;
+
+
+  const intervalo = setInterval(() => {
+    items.forEach(item => item.classList.remove("activo"));
+    items[index].classList.add("activo");
+    index = (index + 1) % items.length;
+    i++;
+
+
+    if (i > vueltas) {
+      clearInterval(intervalo);
+      const premio = items[(index - 1 + items.length) % items.length];
+
+
+      if (premio.id === "legendario" && !legendarioDisponible) {
+        girar();
+        return;
+      }
+
+
+      if (premio.id === "legendario") {
+        legendarioDisponible = false;
+        premio.innerHTML = "💛 Ganado";
+        lanzarCorazones();
+        modalText.innerText = premio.dataset.text + "\n\n✨ Ruleta completa ✨";
+      } else {
+        modalText.innerText = premio.dataset.text;
+      }
+
+
+      modal.style.display = "flex";
+    }
+  }, 110);
+}
+
+
+function cerrar() {
+  modal.style.display = "none";
+}
+</script>
+
+
+</body>
+</html>
